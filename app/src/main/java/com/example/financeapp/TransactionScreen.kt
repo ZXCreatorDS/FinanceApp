@@ -18,18 +18,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 @Suppress("FunctionNaming")
 internal fun TransactionScreen(
-    viewModel: TransactionViewModel = viewModel(),
+    viewModel: TransactionViewModel,
+    showBalance: Boolean,
+    onOpenSettings: () -> Unit,
 ) {
     val state = viewModel.uiState
 
@@ -45,14 +47,27 @@ internal fun TransactionScreen(
                 text = stringResource(R.string.transaction_title),
                 style = MaterialTheme.typography.headlineSmall,
             )
-            Text(
-                text = stringResource(
-                    R.string.balance_summary,
-                    state.balance,
-                    state.transactionCount,
-                ),
-                style = MaterialTheme.typography.titleMedium,
-            )
+            TextButton(onClick = onOpenSettings) {
+                Text(stringResource(R.string.settings_title))
+            }
+            if (showBalance) {
+                Text(
+                    text = stringResource(
+                        R.string.balance_summary,
+                        state.balance,
+                        state.transactionCount,
+                    ),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            } else {
+                Text(
+                    text = stringResource(
+                        R.string.transaction_count,
+                        state.transactionCount,
+                    ),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
             if (state.isLoading) {
                 Text(stringResource(R.string.transaction_loading))
             }
